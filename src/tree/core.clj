@@ -32,4 +32,4 @@
 
 (defn -main [& args]
   (let [{:keys [options arguments summary]} (parse-opts args cli-options)]
-    (if (get options :help) (println "Usage:\n" summary)))) 
+    (if (get options :help) (println "Usage:\n" summary))))
