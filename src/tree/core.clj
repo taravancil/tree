@@ -3,36 +3,32 @@
   (:gen-class))
 
 (def cli-options
-  [["--help"]
-   ["--version"]
-   ["-a" "Print all files"]
-   ["-d" "Print directories only"]
-   ["-f" "Print full paths"]
-   ["-l" "Follow symlinks if they refer to directories"]
-   ;; TODO validate the pattern? -tbv
-   ["-P PATTERN" "List files that match PATTERN"]
-   ["-I PATTERN" "Do not list files that match PATTERN"]
-   ["--noreport" "Do not show report of files and directories listed"]
-   ["-p" "Print file and directory permissions"]
-   ["-s" "Print size in bytes"]
-   ["-h" "Print size in a human-readable format"]
-   ["-u" "Print username or alternatively UID of files"]
-   ["-g" "Print group name"]
-   ["-D" "Print last modified date of file"]
-   ["-r" "Sort output by reverse alphabetical order"]
-   ["-t" "Sort by last modified date"]
-   ["-n" "Turn colorization off"]
-   ["-C" "Turn colorization on"]
-   ["-L DEPTH" "Set max display depth of the listing tree"
+  [[nil "--help"]
+   [nil "--version"]
+   ["-a" "--all" "Print all files"]
+   ["-d" "--directories" "Print directories only"]
+   ["-f" "--full-paths" "Print full paths"]
+   ["-l" "--links" "Follow symlinks if they refer to directories"]
+   ["-P PATTERN" "--pattern" "List files that match PATTERN"]
+   [nil "--noreport" "Do not show report of files and directories listed"]
+   ["-p" "--permissions" "Print file and directory permissions"]
+   ["-s" "--size" "Print size in bytes"]
+   ["-h" "--human-readable" "Print size in a human-readable format"]
+   ["-u" "--username" "Print username or alternatively UID of files"]
+   ["-g" "--group" "Print group name"]
+   ["-D" "--last-modified" "Print last modified date of file"]
+   ["-r" "--reverse" "Sort output by reverse alphabetical order"]
+   ["-t" "--time" "Sort by last modified date"]
+   ["-n" "--no-colorize" "Turn colorization off"]
+   ["-C" "--colorize" "Turn colorization on"]
+   ["-L DEPTH" "--levels" "Set max display depth of the listing tree"
     :default 65536
     :parse-fn #(Integer/parseInt %)
     :validate [#(< 0 % 0x10000) "Must be a number between 0 and 65536"]]
-   ["--filelimit LIMIT" "Only traverse directories with file count under LIMIT"
+   [nil "--filelimit LIMIT" "Only traverse directories with file count under LIMIT"
     :default 65536
     :parse-fn #(Integer/parseInt %)
     :validate [#(< 0 % 0x10000) "Must be a number between 0 and 65536"]]])
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (println "Hello, World!"))
+(defn -main [& args]
+  (parse-opts args cli-options))
