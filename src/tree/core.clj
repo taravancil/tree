@@ -30,6 +30,12 @@
     :parse-fn #(Integer/parseInt %)
     :validate [#(< 0 % 0x10000) "Must be a number between 0 and 65536"]]])
 
+(defn directory-items
+  "A sequence of the items in the directory dir"
+  [dir]
+  (let [f (clojure.java.io/file dir)]
+    (file-seq f)))
+
 (defn -main [& args]
   (let [{:keys [options arguments summary]} (parse-opts args cli-options)]
     (if (get options :help) (println "Usage:\n" summary))))
