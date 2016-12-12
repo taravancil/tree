@@ -31,4 +31,5 @@
     :validate [#(< 0 % 0x10000) "Must be a number between 0 and 65536"]]])
 
 (defn -main [& args]
-  (parse-opts args cli-options))
+  (let [{:keys [options arguments summary]} (parse-opts args cli-options)]
+    (if (get options :help) (println "Usage:\n" summary)))) 
