@@ -2,6 +2,8 @@
   (:require [clojure.tools.cli :refer [parse-opts]])
   (:gen-class))
 
+(def current-path (clojure.java.io/file "."))
+
 (def cli-options
   [[nil "--help"]
    [nil "--version"]
@@ -30,12 +32,23 @@
     :parse-fn #(Integer/parseInt %)
     :validate [#(< 0 % 0x10000) "Must be a number between 0 and 65536"]]])
 
+(defn get-file [path] (clojure.java.io/file path))
+
 (defn directory-items
   "A sequence of the items in the directory dir"
   [dir]
-  (let [f (clojure.java.io/file dir)]
-    (file-seq f)))
+  (file-seq dir))
+
+(defn traverse
+  [indent dir]
+  (doseq [f (rest (directory-items dir))]
+    (if (.isDirectory f)
+      (println "dir" (.getName f) (traverse (+ indent 2) f))
+      (println "file" (.getName f)))))
 
 (defn -main [& args]
   (let [{:keys [options arguments summary]} (parse-opts args cli-options)]
-    (if (get options :help) (println "Usage:\n" summary))))
+    (cond
+      (get options :help) (println "Usage:\n summary")
+      (seq args) (traverse 0 (get-file (nth args 0)))
+      :else (traverse 0 current-path))))
