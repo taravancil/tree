@@ -42,11 +42,10 @@
 (defn traverse
   [dir level]
   (doseq [f (rest (directory-items dir))]
-    (if (.isDirectory f)
-      (println "dir"
-               (.getName f)
-               (traverse f (+ level 1)))
-      (println "file" (.getName f)))))
+    (println (apply str (repeat level "  "))
+             "|--"
+             (.getName f))
+    (if (.isDirectory f) (traverse f (+ level 1)))))
 
 (defn -main [& args]
   (let [{:keys [options arguments summary]} (parse-opts args cli-options)
