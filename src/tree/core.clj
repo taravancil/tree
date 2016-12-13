@@ -40,15 +40,19 @@
   (file-seq dir))
 
 (defn traverse
-  [indent dir]
+  [dir level]
   (doseq [f (rest (directory-items dir))]
     (if (.isDirectory f)
-      (println "dir" (.getName f) (traverse (+ indent 2) f))
+      (println "dir"
+               (.getName f)
+               (traverse f (+ level 1)))
       (println "file" (.getName f)))))
 
 (defn -main [& args]
-  (let [{:keys [options arguments summary]} (parse-opts args cli-options)]
+  (let [{:keys [options arguments summary]} (parse-opts args cli-options)
+        initial-level 0]
     (cond
       (get options :help) (println "Usage:\n summary")
-      (seq args) (traverse 0 (get-file (nth args 0)))
-      :else (traverse 0 current-path))))
+      (get options :help) (println "Usage:\n summary")
+      (seq args) (traverse (get-file (nth args 0)) initial-level)
+      :else (traverse current-path initial-level))))
