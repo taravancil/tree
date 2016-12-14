@@ -40,18 +40,15 @@
   (file-seq dir))
 
 (defn traverse
-  [dir level]
-  (doseq [f (rest (directory-items dir))]
-    (println (apply str (repeat level "  "))
-             "|--"
-             (.getName f))
-    (if (.isDirectory f) (traverse f (+ level 1)))))
+  [dir depth]
+  (let [files (rest (directory-items dir))]
+    (for [f files]
+      (when (.isDirectory f) (cons (traverse (.getName f)) files)))
+    files))
 
 (defn -main [& args]
-  (let [{:keys [options arguments summary]} (parse-opts args cli-options)
-        initial-level 0]
+  (let [{:keys [options arguments summary]} (parse-opts args cli-options)]
     (cond
       (get options :help) (println "Usage:\n summary")
-      (get options :help) (println "Usage:\n summary")
-      (seq args) (traverse (get-file (nth args 0)) initial-level)
-      :else (traverse current-path initial-level))))
+      (seq args) (traverse (get-file (nth args 0)))
+      :else (traverse current-path))))
